@@ -4,21 +4,18 @@ import subprocess
 def launch_network_scanner():
     subprocess.Popen(["python3", "tools/network_scanner/gui.py"])
 
-def shutdown_pi():
-    subprocess.call(["sudo", "shutdown", "now"])
+def launch_ip_config():
+    subprocess.Popen(["python3", "tools/ip_config/ip_config_gui.py"])
 
 root = tk.Tk()
-root.title("BAS-Brick Toolbox")
+root.title("BAS-Brick Launcher")
 root.geometry("320x240")
 root.configure(bg="black")
 
-title = tk.Label(root, text="BAS-Brick", font=("Helvetica", 20, "bold"), fg="white", bg="black")
-title.pack(pady=20)
+tk.Label(root, text="BAS-Brick Tools", font=("Helvetica", 16), bg="black", fg="white").pack(pady=10)
 
-btn1 = tk.Button(root, text="Network Scanner", font=("Helvetica", 14), width=25, height=2, command=launch_network_scanner)
-btn1.pack(pady=10)
-
-shutdown_btn = tk.Button(root, text="Shutdown", font=("Helvetica", 12), width=25, height=2, command=shutdown_pi)
-shutdown_btn.pack(pady=20)
+tk.Button(root, text="Network Scanner", font=("Helvetica", 12), width=20, height=2, command=launch_network_scanner).pack(pady=5)
+tk.Button(root, text="Set Static IP", font=("Helvetica", 12), width=20, height=2, command=launch_ip_config).pack(pady=5)
+tk.Button(root, text="Exit", font=("Helvetica", 12), width=20, height=2, command=root.quit).pack(pady=5)
 
 root.mainloop()

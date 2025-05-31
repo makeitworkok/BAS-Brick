@@ -15,15 +15,10 @@ def load_config():
 def dummy_scan():
     config = load_config()
     output_dir = config.get("output_path", "/home/pi/network_scans")
-    scan_range = config.get("scan_range", "10.46.12.0/24")  # This is what matters now
-
+    scan_range = config.get("scan_range", "10.46.12.0/24")
     os.makedirs(output_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filepath = os.path.join(output_dir, f"scan_{timestamp}.csv")
-
-    print(f"Scanning subnet: {scan_range}")
-    print(f"Saving results to: {filepath}")
-
     with open(filepath, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["timestamp", "ip", "mac"])
