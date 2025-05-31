@@ -1,12 +1,22 @@
 from datetime import datetime
 import csv
 import os
+import json
+
+def load_config():
+    try:
+        with open("tools/network_scanner/config.json") as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 def dummy_scan():
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_dir = "/home/pi/network_scans"
+    config = load_config()
+    output_dir = config.get("output_path", "/home/pi/network_scans")
     os.makedirs(output_dir, exist_ok=True)
-    filepath = f"{output_dir}/scan_{timestamp}.csv"
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filepath = os.path.join(output_dir, f"scan_{timestamp}.csv")
 
     with open(filepath, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)

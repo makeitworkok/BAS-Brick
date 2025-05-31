@@ -1,10 +1,19 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox
 import subprocess
 import os
 import csv
+import json
 
-SCAN_DIR = os.path.expanduser("~/Documents/network_scans")  # Temp path for macOS dev
+def load_config():
+    try:
+        with open("tools/network_scanner/config.json") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+CONFIG = load_config()
+SCAN_DIR = CONFIG.get("output_path", "/home/pi/network_scans")
 
 def run_scan():
     subprocess.run(["python3", "tools/network_scanner/scanner.py"])
@@ -12,16 +21,13 @@ def run_scan():
 
 def view_logs():
     try:
-        latest_file = sorted([
-            f for f in os.listdir(SCAN_DIR) if f.endswith(".csv")
-        ])[-1]
-    except IndexError:
+        files = [f for f in os.listdir(SCAN_DIR) if f.endswith(".csv")]
+        latest_file = sorted(files)[-1]
+    except (IndexError, FileNotFoundError):
         messagebox.showinfo("No Logs", "No scan files found.")
         return
 
     filepath = os.path.join(SCAN_DIR, latest_file)
-
-    # Create new window
     log_window = tk.Toplevel()
     log_window.title(f"Log: {latest_file}")
     log_window.geometry("320x240")
