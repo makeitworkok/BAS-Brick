@@ -1,108 +1,107 @@
 # BAS-Brick
 
-**BAS-Brick** is a modular, field-ready toolkit designed to run on a Raspberry Pi 5 with a touchscreen interface. It is intended for Building Automation System (BAS) professionals who need portable, easy-to-use tools for diagnostics, discovery, and troubleshooting in the field.
-
-This project is designed with non-technical users in mind: large buttons, simple navigation, and automated functions — all accessible via a 3.5" touchscreen display (or HDMI monitor during development).
+**BAS-Brick** is a portable, touchscreen-based field diagnostic tool for Building Automation Systems. It is designed to run on a Raspberry Pi 5 with a 3.5" touchscreen display. The first tool in the suite is a network scanner that detects BACnet/IP and Modbus TCP devices over a wired LAN using ARP scanning.
 
 ---
 
-## 🔧 Current Toolset
+## 🚀 Features
 
-### 🛠️ Tool 1: Network Scanner
-- Scans a known subnet (e.g., `10.46.12.0/24`)
-- Records all discovered IP and MAC addresses
-- Saves logs to timestamped `.csv` files
-- Optional USB copy support (in progress)
-- View logs directly on-screen
+### ✅ Core Functionality
+- Real-time ARP-based device discovery on Ethernet (`eth0`)
+- Automatically logs:
+  - IP Address
+  - MAC Address
+  - Detected Protocol (BACnet, Modbus, or Unknown)
+  - Timestamp
+- Logs saved as CSV files under `/home/pi/network_scans/`
+
+### 🛠 Touchscreen-Friendly GUI Tools
+- **Launcher Menu**: Simple touchscreen interface with buttons
+- **Set Static IP (eth0)**: Stylus-optimized per-octet control with press-and-hold acceleration
+- **Set Scan Range**: Same input method as IP config
+- **Run Network Scan**: Triggers ARP scan and probes discovered devices for BACnet/Modbus ports
 
 ---
 
-## 📐 Project Structure
+## 🖥 Project Structure
 
-```plaintext
+```
 BAS-Brick/
-├── bas_brick_launcher.py       # Main touchscreen launcher GUI
-├── tools/
-│   └── network_scanner/
-│       ├── gui.py              # GUI for the network scanner
-│       ├── scanner.py          # Core scanning logic (currently mocked)
-│       └── config.json         # Subnet and IP configuration
-├── shared/
-│   └── utils.py                # Shared functions for future tools
-├── assets/
-│   └── bas_brick_logo.png      # (Optional) branding
+├── bas_brick_launcher.py             # Main menu GUI
+└── tools/
+    └── network_scanner/
+        ├── scanner.py               # ARP + BACnet/Modbus scan tool
+        ├── scan_range_gui.py       # GUI to set scan range
+        ├── ip_config_gui.py        # GUI to set static IP for eth0
+        ├── config.json             # Stores scan range and optional settings
+```
 
 ---
 
-## 🧰 Setup Instructions
+## 📸 Example Output (CSV)
 
-1. **Install Raspberry Pi OS** (Lite or Full).
-2. **Enable SPI, I2C, and SSH** via `raspi-config`.
-3. **Clone this repository**:
-   ```bash
-   git clone https://github.com/yourusername/BAS-Brick.git
-   ```
-4. **Install Python dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-5. **Configure static IP** (default is `10.46.12.2`) via `dhcpcd.conf`.
+```
+Timestamp,IP Address,MAC Address,Protocol
+2025-05-31_14-32-11,10.46.12.101,B8:27:EB:12:34:56,BACnet
+2025-05-31_14-32-11,10.46.12.102,B8:27:EB:65:43:21,Modbus
+```
 
 ---
 
-## 🖼️ Touchscreen Usage & Calibration
+## ⚙️ Default Configuration
 
-- The system is designed for a 3.5" GPIO touchscreen.
-- Use `xinput_calibrator` for alignment if needed.
-- Interface uses glove-friendly buttons and simple menus.
-
----
-
-## 📸 Screenshots / UI Mockups
-
-*Coming soon.*
+- Static IP: `10.46.12.2/24` on `eth0`
+- Gateway: `.1` of the selected subnet (e.g., `10.46.12.1`)
+- Wi-Fi (`wlan0`) remains DHCP
+- Scan range: `/24` subnet (e.g., `10.46.12.0/24`)
 
 ---
 
-## 🧭 Tool Roadmap
+## 🧪 Setup & Usage
 
-- ✅ Network Scanner
-- ⏳ USB Log Exporter
-- 🔜 BACnet MS/TP Discovery Tool
-- 🔜 Modbus Sniffer
-- 🔜 Wi-Fi Signal Mapper
+### 1. Clone the Repository
+```bash
+git clone https://github.com/makeitworkok/BAS-Brick.git
+cd BAS-Brick
+```
+
+### 2. Run the Launcher
+```bash
+python3 bas_brick_launcher.py
+```
+
+### 3. Buttons Available
+- `Set Static IP (eth0)`
+- `Set Scan Range`
+- `Run Network Scan`
+
+All tools are designed for 3.5" touchscreen operation with a stylus or finger.
+
+---
+
+## 🔒 Notes
+- Designed for offline use (no Internet required)
+- Ideal for field deployment on construction sites or industrial LANs
+- Port probing is minimal and non-intrusive
+
+---
+
+## 🛣 Roadmap
+- Log viewer (deferred)
+- Service tagging and asset labeling
+- Wireless discovery mode
+- Additional field tools
+
+---
+
+## 📜 License
+TBD — Will add when finalized.
 
 ---
 
 ## 🤝 Contributing
+This project is tailored to Trane field needs, but general feedback and PRs are welcome.
 
-PRs welcome! For larger changes, open an issue to discuss first.
-Use conventional commits and follow PEP8.
+Chris Favre
+christopher.a.favre@gmail.com
 
----
-
-## ⚖️ License
-
-MIT License. See `LICENSE` file for details.
-
----
-
-## 🎯 Project Philosophy
-
-**BAS-Brick** aims to:
-- Empower BAS field professionals
-- Prioritize usability and speed
-- Be modular and extensible
-- Work offline, in rugged environments
----
-
-## 📌 Notes
-
-- Results are saved to `/home/pi/network_scans/`
-- Project is modular — more tools will be added soon (e.g., BACnet browser, Modbus monitor).
-
----
-
-## 👷 Author
-
-Created by a field tech, for field techs — making tools simple, durable, and powerful.
