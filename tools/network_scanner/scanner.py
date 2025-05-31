@@ -1,30 +1,54 @@
-from datetime import datetime
-import csv
+import subprocess
 import os
+import csv
 import json
+from datetime import datetime
 
-CONFIG_PATH = "tools/network_scanner/config.json"
+CONFIG_FILE = "tools/network_scanner/config.json"
 
 def load_config():
-    try:
-        with open(CONFIG_PATH) as f:
-            return json.load(f)
-    except Exception:
-        return {}
+    with open(CONFIG_FILE) as f:
+        return json.load(f)
 
-def dummy_scan():
-    config = load_config()
-    output_dir = config.get("output_path", "/home/pi/network_scans")
-    scan_range = config.get("scan_range", "10.46.12.0/24")
-    os.makedirs(output_dir, exist_ok=True)
+def run_arp_scan(scan_range):
+    try:
+        output = subprocess.check_output(
+            ["sudo", "arp-scan", "--interface=eth0", scan_range],
+            stderr=subprocess.STDOUT,
+            universal_newlines=True
+        )
+        return output
+    except subprocess.CalledProcessError as e:
+        return ""
+
+def parse_arp_output(output):
+    results = []
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) == 3 and parts[0].count('.') == 3:
+            ip, mac, vendor = parts
+            results.append((ip, mac))
+    return results
+
+def save_results(results, output_path):
+    os.makedirs(output_path, exist_ok=True)
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filepath = os.path.join(output_dir, f"scan_{timestamp}.csv")
-    with open(filepath, "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(["timestamp", "ip", "mac"])
-        writer.writerow([timestamp, "192.168.1.10", "AA:BB:CC:DD:EE:FF"])
-        writer.writerow([timestamp, "192.168.1.20", "11:22:33:44:55:66"])
-        writer.writerow([timestamp, "scan_range_used", scan_range])
+    filename = os.path.join(output_path, f"scan_{timestamp}.csv")
+    with open(filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Timestamp", "IP Address", "MAC Address"])
+        for ip, mac in results:
+            writer.writerow([timestamp, ip, mac])
+
+def main():
+    config = load_config()
+    scan_range = config.get("scan_range", "10.46.12.0/24")
+    output_path = config.get("output_path", "/home/pi/network_scans")
+    print(f"Scanning network range: {scan_range}")
+    output = run_arp_scan(scan_range)
+    results = parse_arp_output(output)
+    save_results(results, output_path)
+    print(f"Scan complete. {len(results)} device(s) found.")
 
 if __name__ == "__main__":
-    dummy_scan()
+    main()
