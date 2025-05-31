@@ -1,16 +1,22 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 import subprocess
 import os
 import csv
 import json
 
+CONFIG_PATH = "tools/network_scanner/config.json"
+
 def load_config():
     try:
-        with open("tools/network_scanner/config.json") as f:
+        with open(CONFIG_PATH) as f:
             return json.load(f)
     except Exception:
         return {}
+
+def save_config(config):
+    with open(CONFIG_PATH, "w") as f:
+        json.dump(config, f, indent=4)
 
 CONFIG = load_config()
 SCAN_DIR = CONFIG.get("output_path", "/home/pi/network_scans")
@@ -39,6 +45,14 @@ def view_logs():
         for row in reader:
             text.insert(tk.END, "\t".join(row) + "\n")
 
+def set_scan_range():
+    current_range = CONFIG.get("scan_range", "10.46.12.0/24")
+    new_range = simpledialog.askstring("Set Scan Range", "Enter CIDR (e.g. 192.168.1.0/24):", initialvalue=current_range)
+    if new_range:
+        CONFIG["scan_range"] = new_range
+        save_config(CONFIG)
+        messagebox.showinfo("Scan Range Updated", f"Scan range set to: {new_range}")
+
 def close_gui():
     root.destroy()
 
@@ -52,6 +66,9 @@ label.pack(pady=10)
 
 scan_btn = tk.Button(root, text="Start Scan", font=("Helvetica", 14), width=20, height=2, command=run_scan)
 scan_btn.pack(pady=5)
+
+range_btn = tk.Button(root, text="Set Scan Range", font=("Helvetica", 12), width=20, height=2, command=set_scan_range)
+range_btn.pack(pady=5)
 
 log_btn = tk.Button(root, text="View Logs", font=("Helvetica", 12), width=20, height=2, command=view_logs)
 log_btn.pack(pady=5)
