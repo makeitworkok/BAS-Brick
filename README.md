@@ -31,3 +31,66 @@ BAS-Brick/
 │   └── utils.py                # Shared functions for future tools
 ├── assets/
 │   └── bas_brick_logo.png      # (Optional) branding
+
+---
+
+## 🧰 Setup Instructions
+
+1. **Install Raspberry Pi OS** (Lite or Full).
+2. **Enable SPI, I2C, and SSH** via `raspi-config`.
+3. **Clone this repository**:
+   ```bash
+   git clone https://github.com/yourusername/BAS-Brick.git
+   ```
+4. **Install Python dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. **Configure static IP** (default is `10.46.12.2`) via `dhcpcd.conf`.
+
+---
+
+## 🖼️ Touchscreen Usage & Calibration
+
+- The system is designed for a 3.5" GPIO touchscreen.
+- Use `xinput_calibrator` for alignment if needed.
+- Interface uses glove-friendly buttons and simple menus.
+
+---
+
+## 📸 Screenshots / UI Mockups
+
+*Coming soon.*
+
+---
+
+## 🧭 Tool Roadmap
+
+- ✅ Network Scanner
+- ⏳ USB Log Exporter
+- 🔜 BACnet MS/TP Discovery Tool
+- 🔜 Modbus Sniffer
+- 🔜 Wi-Fi Signal Mapper
+
+---
+
+## 🤝 Contributing
+
+PRs welcome! For larger changes, open an issue to discuss first.
+Use conventional commits and follow PEP8.
+
+---
+
+## ⚖️ License
+
+MIT License. See `LICENSE` file for details.
+
+---
+
+## 🎯 Project Philosophy
+
+**BAS-Brick** aims to:
+- Empower BAS field professionals
+- Prioritize usability and speed
+- Be modular and extensible
+- Work offline, in rugged environments
