@@ -30,6 +30,7 @@ def set_scan_range():
         messagebox.showinfo("Updated", f"Scan range set to: {new_range}")
 
 config = load_config()
+root.lift()  # Bring window to front (optional but helpful)
 root = tk.Tk()
 root.title("Network Scanner")
 root.geometry("320x240")

@@ -94,3 +94,15 @@ MIT License. See `LICENSE` file for details.
 - Prioritize usability and speed
 - Be modular and extensible
 - Work offline, in rugged environments
+---
+
+## 📌 Notes
+
+- Results are saved to `/home/pi/network_scans/`
+- Project is modular — more tools will be added soon (e.g., BACnet browser, Modbus monitor).
+
+---
+
+## 👷 Author
+
+Created by a field tech, for field techs — making tools simple, durable, and powerful.
